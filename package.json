@@ -1,0 +1,19 @@
+{
+  "name": "foku-extension",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Block distracting websites, set important daily reminders, and stay focused with Foku",
+  "main": "background.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^2.0.0-beta.33",
+    "vite": "^5.4.11"
+  }
+}

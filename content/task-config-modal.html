@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configure Critical Task</title>
+    <link rel="stylesheet" href="task-config-modal.css">
+</head>
+
+<body>
+    <div id="task-modal-overlay" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>⏰ Configure Important Task</h2>
+                <button id="modal-close" class="close-btn">✕</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="site-info">
+                    <div class="site-icon">🌐</div>
+                    <div class="site-details">
+                        <h3 id="modal-site-title">Loading...</h3>
+                        <p id="modal-site-url">Loading...</p>
+                    </div>
+                </div>
+
+                <div class="time-config">
+                    <label>
+                        <span class="label-icon">⏰</span>
+                        <span>Reminder Times</span>
+                    </label>
+                    <span class="input-description">Add one or more times when this task should open</span>
+
+                    <div id="reminder-times-list">
+                        <!-- Time inputs will be added here -->
+                    </div>
+
+                    <button type="button" id="add-time-btn" class="add-time-btn">+ Add Another Time</button>
+                </div>
+
+                <div id="validation-error" class="error-message"></div>
+            </div>
+
+            <div class="modal-footer">
+                <button id="modal-cancel" class="secondary-btn">Cancel</button>
+                <button id="modal-save" class="primary-btn">Save Task</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

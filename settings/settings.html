@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foku - Settings</title>
+    <link rel="stylesheet" href="settings.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>⚙️ Settings</h1>
+            <p class="subtitle">Customize your task management experience</p>
+        </header>
+
+        <section class="settings-section">
+            <h2>General Settings</h2>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h3>Visual Effects</h3>
+                    <p>Enable window pulse effect for reminders</p>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" id="visual-effects" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h3>Notification Sound</h3>
+                    <p>Play sound when boomerang triggers</p>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" id="notification-sound" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </section>
+
+        <section class="settings-section">
+            <h2>Tab Management</h2>
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h3>Tab Limiter</h3>
+                    <p>Prevent having too many tabs open</p>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" id="tab-limiter-enabled" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="input-group" id="tab-limit-container">
+                <label for="tab-limit">Max Tabs Allowed</label>
+                <div class="number-input-group">
+                    <input type="number" id="tab-limit" value="20" min="1" max="100">
+                    <span class="hint">Tabs will be closed oldest-first if limit is exceeded</span>
+                </div>
+            </div>
+
+            <button id="save-tab-settings" class="primary-btn">Save Tab Settings</button>
+        </section>
+
+        <section class="settings-section">
+            <h2>Blocked Websites</h2>
+            <p class="description">Add websites to block during focus mode (one per line)</p>
+
+            <textarea id="blocked-websites" rows="8" placeholder="*://*.twitter.com/*
+*://*.youtube.com/*
+*://*.reddit.com/*"></textarea>
+
+            <button id="save-blocked" class="primary-btn">Save Blocked Websites</button>
+        </section>
+
+
+
+        <section class="settings-section">
+            <h2>Daily Check Time</h2>
+            <p class="description">Set the time for daily critical task reminders</p>
+
+            <div class="input-group">
+                <label for="check-time">Time</label>
+                <input type="time" id="check-time" value="09:00">
+            </div>
+
+            <button id="save-time" class="primary-btn">Save Time</button>
+        </section>
+
+        <section class="settings-section danger-zone">
+            <h2>Danger Zone</h2>
+
+            <button id="clear-boomerangs" class="danger-btn">Clear All Boomerangs</button>
+            <button id="clear-tasks" class="danger-btn">Clear All Critical Tasks</button>
+            <button id="reset-settings" class="danger-btn">Reset All Settings</button>
+        </section>
+
+        <footer>
+            <p class="version">Version 1.0.0</p>
+        </footer>
+    </div>
+
+    <script src="settings.js" type="module"></script>
+</body>
+
+</html>

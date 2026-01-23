@@ -1,0 +1,62 @@
+{
+  "manifest_version": 3,
+  "name": "Foku - Focus & Productivity",
+  "version": "1.0.0",
+  "description": "Block distracting websites, set important daily reminders, and stay focused with Foku",
+  "permissions": [
+    "storage",
+    "alarms",
+    "tabs",
+    "contextMenus",
+    "notifications",
+    "declarativeNetRequest",
+    "webNavigation",
+    "system.display",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "assets/icon16.png",
+      "48": "assets/icon48.png",
+      "128": "assets/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "assets/icon16.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content/tab-highlighter.js",
+        "content/task-config-modal.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/notification.mp3",
+        "content/blocker.html",
+        "content/task-config-modal.html",
+        "content/task-config-modal.css"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "options_page": "settings/settings.html"
+}
