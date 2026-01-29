@@ -30,6 +30,9 @@ A Chrome extension that helps you stay focused and productive by blocking distra
 
 ## Installation
 
+> [!IMPORTANT]
+> This extension uses modern ES6 modules and Vite build system. **You MUST build the extension before loading it!** Do not load the source files directly into Chrome.
+
 ### From Source (Development)
 
 1. Clone this repository:
@@ -46,14 +49,49 @@ A Chrome extension that helps you stay focused and productive by blocking distra
    ```bash
    npm run build
    ```
+   This creates a `dist` folder with the compiled extension.
 
 4. Load in Chrome:
    - Go to `chrome://extensions/`
    - Enable **Developer mode** (top right)
    - Click **Load unpacked**
-   - Select the `dist` folder
+   - Select the **`dist`** folder (NOT the root folder!)
 
 5. Pin the extension for easy access!
+
+### Development Mode
+
+For development with hot reload:
+```bash
+npm run dev
+```
+Then load the `dist` folder in Chrome. The extension will auto-reload when you make changes.
+
+## Troubleshooting
+
+### ❌ Import errors / Module not found
+**Problem:** Extension fails to load with import/module errors
+
+**Solution:** You're loading the source files instead of the built files. Always load the `dist` folder, not the root project folder.
+
+### ❌ Content script not found
+**Problem:** "Content script not found" error in console
+
+**Solution:** Extension wasn't built properly. Run `npm run build` again and reload the extension.
+
+### ❌ Extension features not working
+**Problem:** Context menus, Focus Mode, or other features don't work
+
+**Solution:** 
+1. Make sure you loaded the `dist` folder
+2. Try rebuilding: `npm run build`
+3. Reload the extension in Chrome
+4. Hard refresh any open tabs (Ctrl+Shift+R)
+
+### ❌ Premium features not working
+**Problem:** Domain-specific limits and other premium features aren't available
+
+**Solution:** This is normal behavior in the free version. Premium build requires setting `VITE_PREMIUM_BUILD=true` environment variable before building.
 
 ## Usage
 

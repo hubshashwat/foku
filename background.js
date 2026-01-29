@@ -1,4 +1,6 @@
 // Premium Build Split
+// This import is resolved by Vite during build via the @premium alias
+// The extension must be built with 'npm run build' before loading
 import * as premium from '@premium';
 
 // Extension installed/updated
@@ -437,7 +439,7 @@ async function isTabOpen(url) {
 }
 
 function generateId() {
-    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 }
 
 function getNext9AM() {
