@@ -45,17 +45,29 @@ function highlightTab(duration) {
 
 console.log('[Focus Mode] Tab highlighter script loaded');
 
-// Check Focus Mode on page load
-(async function () {
+// Check Focus Mode on page load with retry
+async function checkFocusModeWithRetry(maxRetries = 3, delayMs = 500) {
     console.log('[Focus Mode] Checking blocking state on page load...');
-    try {
-        const result = await chrome.runtime.sendMessage({ action: 'checkBlockingState' });
-        console.log('[Focus Mode] blockingActive result:', result);
-        checkAndShowBlocker(result);
-    } catch (error) {
-        console.error('[Focus Mode] Failed to check Focus Mode:', error);
+    
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            const result = await chrome.runtime.sendMessage({ action: 'checkBlockingState' });
+            console.log('[Focus Mode] blockingActive result:', result);
+            checkAndShowBlocker(result);
+            return; // Success
+        } catch (error) {
+            console.warn(`[Focus Mode] Attempt ${i + 1}/${maxRetries} failed:`, error.message);
+            if (i < maxRetries - 1) {
+                await new Promise(resolve => setTimeout(resolve, delayMs));
+            } else {
+                console.error('[Focus Mode] Failed to check Focus Mode after all retries');
+            }
+        }
     }
-})();
+}
+
+// Start the check
+checkFocusModeWithRetry();
 
 /**
  * Check if current site should be blocked and show blocker if needed

@@ -84,19 +84,24 @@ async function submitChecklist() {
         return;
     }
 
-    // Mark each checked task as completed
+    // Send completion messages to background (handles deletion of one-time tasks)
+    for (const taskId of completedTaskIds) {
+        try {
+            await chrome.runtime.sendMessage({
+                action: 'completeTask',
+                taskId: taskId,
+                completedItems: [] // We are completing the whole task
+            });
+        } catch (error) {
+            console.error('Failed to complete task:', taskId, error);
+        }
+    }
+
+    // Check if we should disable blocking globally (if all tasks are done)
+    // We need to fetch fresh data because background might have deleted some
     const result = await chrome.storage.local.get(['criticalTasks']);
     const tasks = result.criticalTasks || [];
 
-    tasks.forEach(task => {
-        if (completedTaskIds.includes(task.id)) {
-            task.lastCompleted = Date.now();
-        }
-    });
-
-    await chrome.storage.local.set({ criticalTasks: tasks });
-
-    // Check if all tasks are now complete
     const allCompleted = tasks.every(task => {
         const today = new Date().setHours(0, 0, 0, 0);
         const lastCompleted = task.lastCompleted || 0;

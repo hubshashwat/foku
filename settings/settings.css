@@ -231,12 +231,34 @@ input:checked+.slider:before {
     box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
 }
 
-textarea {
+#blocked-websites {
+    width: 100%;
+    display: block;
     resize: vertical;
     min-height: 100px;
     font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
     font-size: 12px;
     line-height: 1.6;
+    margin-bottom: 20px !important;
+    /* Force spacing */
+    box-sizing: border-box;
+    /* Ensure padding doesn't affect width */
+}
+
+/* Ensure button starts on a new line */
+#save-blocked {
+    display: block;
+    clear: both;
+    margin-top: 10px;
+}
+
+.hint {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 16px !important;
+    /* Force increased spacing */
 }
 
 /* Buttons */

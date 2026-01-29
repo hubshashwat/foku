@@ -40,8 +40,7 @@ async function loadSettings() {
     ];
     document.getElementById('blocked-websites').value = blockedWebsites.join('\n');
 
-    // Daily check time
-    document.getElementById('check-time').value = settings.dailyCheckTime || '09:00';
+
 }
 
 /**
@@ -64,7 +63,7 @@ function setupEventListeners() {
     document.getElementById('save-blocked').addEventListener('click', saveBlockedWebsites);
 
     // Daily check time
-    document.getElementById('save-time').addEventListener('click', saveDailyCheckTime);
+
 
     // Tab limiter settings
     document.getElementById('save-tab-settings').addEventListener('click', saveTabSettings);
@@ -92,27 +91,7 @@ async function saveBlockedWebsites() {
 /**
  * Save daily check time
  */
-async function saveDailyCheckTime() {
-    const time = document.getElementById('check-time').value;
-    await chrome.storage.local.set({ dailyCheckTime: time });
 
-    // Update the alarm
-    const [hours, minutes] = time.split(':').map(Number);
-    const now = new Date();
-    const next = new Date();
-    next.setHours(hours, minutes, 0, 0);
-
-    if (now >= next) {
-        next.setDate(next.getDate() + 1);
-    }
-
-    await chrome.alarms.create('daily-check', {
-        when: next.getTime(),
-        periodInMinutes: 24 * 60
-    });
-
-    showToast('Daily check time updated to ' + time);
-}
 
 /**
  * Save tab limiter settings

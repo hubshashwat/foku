@@ -11,7 +11,7 @@ let reminderTimes = [];
 // Listen for messages from background script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'showTaskConfigModal') {
-        showModal(message.url, message.title);
+        showModal(message.url, message.title, message.frequency);
         sendResponse({ success: true });
     }
     return true;
@@ -20,30 +20,41 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 /**
  * Show the configuration modal
  */
-function showModal(url, title) {
-    console.log('Showing modal for:', url, title);
-    currentTaskData = { url, title };
+async function showModal(url, title, frequency = 'daily') {
+    console.log('Showing modal for:', url, title, frequency);
+    currentTaskData = { url, title, frequency };
     reminderTimes = [];
 
-    // Inject modal if not already present
-    if (!document.getElementById('task-modal-overlay')) {
-        injectModal();
-        // Wait for injection to complete
-        setTimeout(() => populateAndShow(url, title), 100);
-    } else {
-        populateAndShow(url, title);
+    // Force cleanup of existing modal to prevent stale script bindings
+    const existingOverlay = document.getElementById('task-modal-overlay');
+    if (existingOverlay) {
+        console.log('Removing existing modal to ensure fresh state');
+        existingOverlay.remove();
+    }
+
+    try {
+        await injectModal();
+        populateAndShow(url, title, frequency);
+    } catch (e) {
+        console.error('Failed to show modal:', e);
     }
 }
 
-function populateAndShow(url, title) {
-    console.log('Populating modal with:', url, title);
+function populateAndShow(url, title, frequency) {
+    console.log('Populating modal with:', url, title, frequency);
 
     // Populate modal data
+    const headerTitle = document.querySelector('.modal-header h2');
     const titleEl = document.getElementById('modal-site-title');
     const urlEl = document.getElementById('modal-site-url');
+    const listEl = document.getElementById('reminder-times-list');
 
+    if (headerTitle) {
+        headerTitle.textContent = frequency === 'once' ? '⏰ Configure One-Time Task' : '⏰ Configure Important Task';
+    }
     if (titleEl) titleEl.textContent = title;
     if (urlEl) urlEl.textContent = url;
+    if (listEl) listEl.innerHTML = ''; // Clear previous times
 
     // Add first reminder time (2 minutes from now for testing)
     const now = new Date();
@@ -62,7 +73,7 @@ function populateAndShow(url, title) {
  */
 function injectModal() {
     console.log('Injecting modal...');
-    fetch(chrome.runtime.getURL('content/task-config-modal.html'))
+    return fetch(chrome.runtime.getURL('content/task-config-modal.html'))
         .then(response => response.text())
         .then(html => {
             const parser = new DOMParser();
@@ -72,9 +83,11 @@ function injectModal() {
 
             console.log('Modal injected, attaching listeners');
             attachEventListeners();
+            return true;
         })
         .catch(error => {
             console.error('Failed to inject modal:', error);
+            throw error;
         });
 }
 
@@ -212,19 +225,21 @@ async function saveTask() {
             action: 'createCriticalTask',
             url: currentTaskData.url,
             title: currentTaskData.title,
+            frequency: currentTaskData.frequency,
             reminderTimes: times
         });
 
         console.log('Response from background:', response);
 
         if (response && response.success) {
+            const taskTitle = currentTaskData.title;
             closeModal();
             // Show success notification
             const timesStr = times.join(', ');
             chrome.runtime.sendMessage({
                 action: 'showNotification',
                 title: '✅ Task Created',
-                message: `"${currentTaskData.title}" will open at: ${timesStr}`
+                message: `"${taskTitle}" will open at: ${timesStr}`
             });
         } else {
             showError('Failed to create task');

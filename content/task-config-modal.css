@@ -89,6 +89,10 @@
 /* Modal Body */
 .modal-body {
     padding: 24px;
+    max-height: 50vh;
+    /* Limit height to 50% of viewport */
+    overflow-y: auto;
+    /* Enable scrolling */
 }
 
 /* Site Info */
@@ -112,6 +116,15 @@
     justify-content: center;
     background: rgba(255, 255, 255, 0.08);
     border-radius: 12px;
+    flex-shrink: 0;
+    /* Prevent icon from shrinking */
+}
+
+.site-details {
+    flex: 1;
+    /* Take remaining space */
+    min-width: 0;
+    /* Critical for text truncation in flexbox */
 }
 
 .site-details h3 {

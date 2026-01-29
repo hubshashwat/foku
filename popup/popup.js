@@ -169,19 +169,22 @@ async function loadCriticalTasks() {
 
     container.innerHTML = tasks.map(t => {
         // Format reminder times display
+        // Format reminder times display
         let timeDisplay;
+        const prefix = t.frequency === 'once' ? 'Once' : 'Daily';
+
         if (t.reminderTimes && t.reminderTimes.length > 0) {
             // New format: multiple reminder times
             if (t.reminderTimes.length === 1) {
-                timeDisplay = `⏰ Daily at ${t.reminderTimes[0]}`;
+                timeDisplay = `⏰ ${prefix} at ${t.reminderTimes[0]}`;
             } else {
-                timeDisplay = `⏰ ${t.reminderTimes.length}x: ${t.reminderTimes.join(', ')}`;
+                timeDisplay = `⏰ ${prefix} (${t.reminderTimes.length}x): ${t.reminderTimes.join(', ')}`;
             }
         } else if (t.time) {
             // Old format: single time
-            timeDisplay = `⏰ Daily at ${t.time}`;
+            timeDisplay = `⏰ ${prefix} at ${t.time}`;
         } else {
-            timeDisplay = `⏰ Daily`;
+            timeDisplay = `⏰ ${prefix}`;
         }
 
         return `

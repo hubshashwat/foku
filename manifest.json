@@ -12,7 +12,8 @@
     "declarativeNetRequest",
     "webNavigation",
     "system.display",
-    "scripting"
+    "scripting",
+    "offscreen"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -51,7 +52,9 @@
         "assets/notification.mp3",
         "content/blocker.html",
         "content/task-config-modal.html",
-        "content/task-config-modal.css"
+        "content/task-config-modal.css",
+        "offscreen/offscreen.html",
+        "offscreen/offscreen.js"
       ],
       "matches": [
         "<all_urls>"
