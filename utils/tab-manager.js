@@ -35,7 +35,7 @@ export async function highlightTab(tabId) {
             duration: 10000 // 10 seconds
         });
     } catch (error) {
-        console.error('Failed to highlight tab:', error);
+        // Failed to highlight tab
     }
 }
 
@@ -56,7 +56,7 @@ export async function flashTabTitle(tabId, originalTitle, flashText = '🔴 CRIT
                     title: originalTitle
                 });
             } catch (error) {
-                console.error('Failed to restore title:', error);
+                // Failed to restore title
             }
             return;
         }

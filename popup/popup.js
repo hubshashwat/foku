@@ -111,7 +111,6 @@ async function createBoomerang() {
             await loadBoomerangs();
         }
     } catch (error) {
-        console.error('Failed to create boomerang:', error);
         btn.textContent = '✗ Failed';
         setTimeout(() => {
             btn.textContent = '🪃 Create Boomerang';
@@ -270,7 +269,6 @@ async function toggleFocusMode(event) {
         status.textContent = enabled ? 'Enabled' : 'Disabled';
         status.className = enabled ? 'status-enabled' : 'status-disabled';
     } catch (error) {
-        console.error('Failed to toggle focus mode:', error);
         event.target.checked = !enabled;
     }
 }

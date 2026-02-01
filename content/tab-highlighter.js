@@ -43,24 +43,16 @@ function highlightTab(duration) {
     }, duration);
 }
 
-console.log('[Focus Mode] Tab highlighter script loaded');
-
 // Check Focus Mode on page load with retry
 async function checkFocusModeWithRetry(maxRetries = 3, delayMs = 500) {
-    console.log('[Focus Mode] Checking blocking state on page load...');
-    
     for (let i = 0; i < maxRetries; i++) {
         try {
             const result = await chrome.runtime.sendMessage({ action: 'checkBlockingState' });
-            console.log('[Focus Mode] blockingActive result:', result);
             checkAndShowBlocker(result);
             return; // Success
         } catch (error) {
-            console.warn(`[Focus Mode] Attempt ${i + 1}/${maxRetries} failed:`, error.message);
             if (i < maxRetries - 1) {
                 await new Promise(resolve => setTimeout(resolve, delayMs));
-            } else {
-                console.error('[Focus Mode] Failed to check Focus Mode after all retries');
             }
         }
     }
@@ -87,8 +79,6 @@ async function checkAndShowBlocker(focusModeEnabled) {
     ];
 
     const currentUrl = window.location.href;
-    console.log('[Focus Mode] Checking URL:', currentUrl);
-    console.log('[Focus Mode] Blocked patterns:', blockedWebsites);
 
     // Check if current URL matches any blocked pattern
     const isBlocked = blockedWebsites.some(site => {

@@ -6,8 +6,6 @@ import * as premium from '@premium';
 // Extension installed/updated
 chrome.runtime.onInstalled.addListener(() => {
     // ... same as before
-    console.log(`Boomerang & Nagging extension installed`);
-
     chrome.notifications.create({
         type: 'basic',
         iconUrl: chrome.runtime.getURL('assets/icon128.png'),
@@ -73,14 +71,12 @@ function blockTab(tabId, reason) {
         title: '🚫 Tab Blocked',
         message: reason
     });
-    console.log(`Blocked tab ${tabId}: ${reason}`);
 }
 
 // Handle context menu clicks
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     if (info.menuItemId === 'mark-critical' || info.menuItemId === 'mark-critical-once') {
         const isOnce = info.menuItemId === 'mark-critical-once';
-        console.log(`Context menu clicked: ${info.menuItemId}. Sending showTaskConfigModal to:`, tab.id);
 
         // Send message to content script (already injected via manifest)
         try {
@@ -91,7 +87,6 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
                 frequency: isOnce ? 'once' : 'daily'
             });
         } catch (error) {
-            console.warn('Content script not responding:', error);
             // Content script is declared in manifest for all URLs
             // If not responding, either the page is restricted or needs a reload
             chrome.notifications.create({
@@ -106,8 +101,6 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
 // Handle alarms
 chrome.alarms.onAlarm.addListener(async (alarm) => {
-    console.log('Alarm fired:', alarm.name);
-
     if (alarm.name.startsWith('reminder-')) {
         await handleReminderAlarm(alarm.name);
     } else if (alarm.name === 'daily-check') {
@@ -128,8 +121,6 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
  * Handle reminder alarm - just open the tab
  */
 async function handleReminderAlarm(alarmName) {
-    console.log('Processing reminder alarm:', alarmName);
-
     const tasks = await getCriticalTasks();
 
     // Find task that owns this alarm
@@ -137,7 +128,6 @@ async function handleReminderAlarm(alarmName) {
 
     if (!task) {
         // Alarm might belong to a deleted one-time task
-        console.warn('Task not found for alarm (cleaning up):', alarmName);
         chrome.alarms.clear(alarmName);
         return;
     }
@@ -167,11 +157,8 @@ async function handleReminderAlarm(alarmName) {
         requireInteraction: true
     });
 
-    console.log('Tab opened for:', task.title);
-
     // Auto-cleanup for One-Time tasks
     if (task.frequency === 'once') {
-        console.log(`Auto-cleaning One-Time task execution: ${alarmName}`);
 
         // Remove the specific alarm/time that just fired
         if (task.alarmNames && task.alarmNames.includes(alarmName)) {
@@ -187,11 +174,9 @@ async function handleReminderAlarm(alarmName) {
 
         // If no reminders left, delete the task entirely
         if (!task.reminderTimes || task.reminderTimes.length === 0) {
-            console.log('One-Time task fully completed (all times fired). Deleting from storage.');
             const taskIdx = tasks.indexOf(task);
             if (taskIdx > -1) tasks.splice(taskIdx, 1);
         } else {
-            console.log('One-Time task updated (removed fired time). Remaining times:', task.reminderTimes.length);
             // Update the task in the list
             const taskIdx = tasks.indexOf(task);
             if (taskIdx > -1) tasks[taskIdx] = task;
@@ -247,10 +232,7 @@ async function handleBoomerang(alarmName) {
 
 // Message handler for creating tasks and other actions
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log('Message received:', message.action);
-
     if (message.action === 'log') {
-        console.log('Offscreen Log:', message.data);
         sendResponse({ success: true });
         return true;
     }
@@ -460,17 +442,14 @@ function getNextOccurrenceTime(timeString) {
 }
 
 async function handleCompleteTask(taskId, completedItems) {
-    console.log('handleCompleteTask called for:', taskId);
     const tasks = await getCriticalTasks();
     const taskIndex = tasks.findIndex(t => t.id === taskId);
 
     if (taskIndex >= 0) {
         const task = tasks[taskIndex];
-        console.log('Found task:', task.title, 'Frequency:', task.frequency);
 
         // If it's a one-time task, delete it completely
         if (task.frequency === 'once') {
-            console.log('Deleting ONE-TIME task:', taskId);
             tasks.splice(taskIndex, 1);
 
             // Clean up its alarms
@@ -479,16 +458,13 @@ async function handleCompleteTask(taskId, completedItems) {
                     await chrome.alarms.clear(alarmName);
                 }
             }
-            console.log('Task and alarms deleted.');
         } else {
             // Daily task logic
-            console.log('Marking DAILY task as complete');
             task.completedItems = completedItems;
             task.lastCompleted = Date.now();
         }
 
         await chrome.storage.local.set({ criticalTasks: tasks });
-        console.log('Storage updated.');
 
         // Notify tabs to re-check blocking
         const isBlocking = await chrome.storage.local.get(['blockingActive']);
@@ -504,7 +480,6 @@ async function handleCompleteTask(taskId, completedItems) {
 
         return { success: true };
     }
-    console.warn('Task not found for completion:', taskId);
     return { success: false };
 }
 
@@ -518,7 +493,6 @@ chrome.storage.onChanged.addListener(async (changes, namespace) => {
         const tasksToDelete = newTasks.filter(t => t.frequency === 'once' && isTaskCompletedToday(t));
 
         if (tasksToDelete.length > 0) {
-            console.log('Safeguard: Found completed One-Time tasks in storage. Deleting:', tasksToDelete.map(t => t.title));
 
             // Filter out the completed one-time tasks
             const cleanTasks = newTasks.filter(t => !(t.frequency === 'once' && isTaskCompletedToday(t)));
@@ -545,8 +519,6 @@ function isTaskCompletedToday(task) {
     return last >= today;
 }
 
-console.log('Background script loaded successfully');
-
 // Offscreen API helpers for consistent audio
 async function playNotificationSound() {
     try {
@@ -556,7 +528,7 @@ async function playNotificationSound() {
             source: chrome.runtime.getURL('assets/notification.mp3')
         });
     } catch (e) {
-        console.error('Failed to play offscreen sound:', e);
+        // Failed to play offscreen sound
     }
 }
 

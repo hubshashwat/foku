@@ -13,8 +13,6 @@ export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '');
     const isPremium = env.VITE_PREMIUM_BUILD === 'true';
 
-    console.log(`Building extension - Premium: ${isPremium}`);
-
     return {
         plugins: [crx({ manifest })],
         resolve: {
