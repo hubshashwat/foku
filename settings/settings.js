@@ -33,10 +33,7 @@ async function loadSettings() {
 
     // Blocked websites
     const blockedWebsites = settings.blockedWebsites || [
-        '*://*.twitter.com/*',
-        '*://*.x.com/*',
-        '*://*.youtube.com/*',
-        '*://*.reddit.com/*'
+        '*://*.example1.com/*','*://*.example2.com/*'
     ];
     document.getElementById('blocked-websites').value = blockedWebsites.join('\n');
 

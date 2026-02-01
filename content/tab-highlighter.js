@@ -83,13 +83,7 @@ async function checkAndShowBlocker(focusModeEnabled) {
     // Get blocked websites list
     const settings = await chrome.storage.local.get(['blockedWebsites']);
     const blockedWebsites = settings.blockedWebsites || [
-        '*twitter.com*',
-        '*x.com*',
-        '*youtube.com*',
-        '*reddit.com*',
-        '*instagram.com*',
-        '*facebook.com*',
-        '*tiktok.com*'
+        '*example.com*'
     ];
 
     const currentUrl = window.location.href;
