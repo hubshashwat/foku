@@ -30,7 +30,7 @@ export async function createNotification(title, message, options = {}) {
 export function playNotificationSound() {
     const audio = new Audio(chrome.runtime.getURL('assets/notification.mp3'));
     audio.volume = 0.7;
-    audio.play().catch(err => console.error('Failed to play sound:', err));
+    audio.play().catch(() => {});
 }
 
 /**
@@ -67,7 +67,7 @@ export async function pulseWindow() {
         // Restore original bounds
         await chrome.windows.update(currentWindow.id, originalBounds);
     } catch (error) {
-        console.error('Failed to pulse window:', error);
+        // Failed to pulse window
     }
 }
 

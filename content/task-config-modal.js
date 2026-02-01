@@ -21,14 +21,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
  * Show the configuration modal
  */
 async function showModal(url, title, frequency = 'daily') {
-    console.log('Showing modal for:', url, title, frequency);
     currentTaskData = { url, title, frequency };
     reminderTimes = [];
 
     // Force cleanup of existing modal to prevent stale script bindings
     const existingOverlay = document.getElementById('task-modal-overlay');
     if (existingOverlay) {
-        console.log('Removing existing modal to ensure fresh state');
         existingOverlay.remove();
     }
 
@@ -36,13 +34,11 @@ async function showModal(url, title, frequency = 'daily') {
         await injectModal();
         populateAndShow(url, title, frequency);
     } catch (e) {
-        console.error('Failed to show modal:', e);
+        // Failed to show modal
     }
 }
 
 function populateAndShow(url, title, frequency) {
-    console.log('Populating modal with:', url, title, frequency);
-
     // Populate modal data
     const headerTitle = document.querySelector('.modal-header h2');
     const titleEl = document.getElementById('modal-site-title');
@@ -72,7 +68,6 @@ function populateAndShow(url, title, frequency) {
  * Inject modal HTML into page
  */
 function injectModal() {
-    console.log('Injecting modal...');
     return fetch(chrome.runtime.getURL('content/task-config-modal.html'))
         .then(response => response.text())
         .then(html => {
@@ -81,12 +76,10 @@ function injectModal() {
             const modalOverlay = doc.getElementById('task-modal-overlay');
             document.body.appendChild(modalOverlay);
 
-            console.log('Modal injected, attaching listeners');
             attachEventListeners();
             return true;
         })
         .catch(error => {
-            console.error('Failed to inject modal:', error);
             throw error;
         });
 }
@@ -154,8 +147,6 @@ function addReminderTime(defaultTime = '') {
     // Attach remove listener
     const removeBtn = item.querySelector('.remove-time-btn');
     removeBtn.addEventListener('click', () => removeReminderTime(id));
-
-    console.log('Added reminder time:', defaultTime);
 }
 
 /**
@@ -168,7 +159,6 @@ function removeReminderTime(id) {
         const list = document.getElementById('reminder-times-list');
         if (list && list.children.length > 1) {
             item.remove();
-            console.log('Removed reminder time:', id);
         } else {
             showError('You must have at least one reminder time');
         }
@@ -198,8 +188,6 @@ function getReminderTimes() {
  * Save the task
  */
 async function saveTask() {
-    console.log('Save task clicked');
-
     const times = getReminderTimes();
 
     if (times.length === 0) {
@@ -217,8 +205,6 @@ async function saveTask() {
     // Sort times chronologically
     times.sort();
 
-    console.log('Sending create task message with times:', times);
-
     // Send to background script
     try {
         const response = await chrome.runtime.sendMessage({
@@ -228,8 +214,6 @@ async function saveTask() {
             frequency: currentTaskData.frequency,
             reminderTimes: times
         });
-
-        console.log('Response from background:', response);
 
         if (response && response.success) {
             const taskTitle = currentTaskData.title;
@@ -246,7 +230,6 @@ async function saveTask() {
         }
     } catch (error) {
         showError('Failed to create task: ' + error.message);
-        console.error('Error creating task:', error);
     }
 }
 
@@ -254,7 +237,6 @@ async function saveTask() {
  * Show error message
  */
 function showError(message) {
-    console.error('Showing error:', message);
     const errorElement = document.getElementById('validation-error');
     if (errorElement) {
         errorElement.textContent = message;
@@ -272,7 +254,6 @@ function showError(message) {
  * Close the modal
  */
 function closeModal() {
-    console.log('Closing modal');
     const overlay = document.getElementById('task-modal-overlay');
     if (overlay) {
         overlay.style.display = 'none';
@@ -289,5 +270,3 @@ function formatTime(date) {
     const minutes = String(date.getMinutes()).padStart(2, '0');
     return `${hours}:${minutes}`;
 }
-
-console.log('✅ Task config modal script loaded (multiple reminders support)');

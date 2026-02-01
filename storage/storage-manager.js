@@ -134,10 +134,7 @@ class StorageManager {
     return new Promise((resolve) => {
       chrome.storage.local.get(['blockedWebsites'], (result) => {
         resolve(result.blockedWebsites || [
-          '*://*.twitter.com/*',
-          '*://*.x.com/*',
-          '*://*.youtube.com/*',
-          '*://*.reddit.com/*'
+          '*://*.example1.com/*','*://*.example2.com/*'
         ]);
       });
     });
