@@ -12,7 +12,6 @@
     "declarativeNetRequest",
     "webNavigation",
     "system.display",
-    "scripting",
     "offscreen"
   ],
   "host_permissions": [
